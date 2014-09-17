@@ -6,15 +6,20 @@ class Player
 {
     size_t cash, bet;
     std::string name;
+    bool inGame;
 
 public:
     Player(std::string name, size_t cash)
         : cash(cash)
         , bet(0)
-        , name(name) {   }
+        , name(name)
+        , inGame(true) {   }
 
     size_t getCash() { return (cash); }
     size_t getBet() { return (bet); }
+    std::string getName() { return (name); }
+
+    bool isInGame() { return (inGame); }
 
     size_t move(size_t newbet)
     {
@@ -22,6 +27,7 @@ public:
         {
             bet += cash;
             cash = 0;
+            inGame = false;
             return (cash);
         } else
         {
@@ -32,5 +38,5 @@ public:
     }
 
     void betReset() { bet = 0; }
-    void win(size_t gain) { cash += gain; }
+    void win(size_t gain) { cash += gain; inGame = true;}
 };
