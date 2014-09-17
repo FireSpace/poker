@@ -5,6 +5,7 @@
 #include <string>
 #include <algorithm>
 #include <stack>
+#include <functional>
 
 #include "player.hpp"
 
@@ -102,7 +103,7 @@ public:
             while (curStep < 3)
             {
                 while (curPlayer != curDealer &&
-                    !std::all_of(players.begin(), players.end(), &Game::whileCond))
+                    !std::all_of(players.begin(), players.end(), std::bind(&Game::whileCond, this, std::placeholders::_1)))
                 {
                     std::cout << players[curPlayer].getName() << std::endl
                               << "player's bet: " << players[curPlayer].getBet() << std::endl
