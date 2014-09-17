@@ -1,7 +1,7 @@
 #pragma once
 
 #include <iostream>
-#include <array>
+#include <vector>
 #include <string>
 #include <algorithm>
 #include <stack>
@@ -11,7 +11,7 @@
 class Game
 {
     size_t number;
-    std::array<Player, number> players;
+    std::vector<Player> players;
 
     size_t curDealer;
     size_t smallBlind;
@@ -27,11 +27,11 @@ class Game
     {
         if (sum == 0 && curBet - players[playerNum].getBet())
         {
-            players[playerNum].fold();
+            players[playerNum].setFold();
             return;
         }
 
-        size_t rSum = playerNum.move(sum);
+        size_t rSum = players[playerNum].move(sum);
         bank.top() += rSum;
         if (rSum > curBet) curBet = rSum; //raise
 
@@ -41,7 +41,7 @@ class Game
     size_t nextPlayer(size_t i)
     {
         i++;
-        while (!players[i].inGame() || players[i].isFold()) i++;
+        while (!players[i].isInGame() || players[i].isFold()) i++;
         return (i);
     }
 
@@ -64,14 +64,19 @@ class Game
         curPlayer = nextPlayer(curPlayer);
     }
 
+    bool whileCond(Player p) //becouse fuck you, c++11 !
+    {
+        return (p.isInGame() && !p.isFold() && p.getBet() == curBet);
+    }
+
 public:
     Game(size_t number)
         : number(number)
+        , players(number)
         , smallBlind(50)
         , curPlayer(0)
         , curBet(0)
         , curStep(0)
-        , bank(0)
     {
         size_t cash;
         std::cout << "Please, write players cash:" << std::endl;
@@ -97,7 +102,7 @@ public:
             while (curStep < 3)
             {
                 while (curPlayer != curDealer &&
-                    std::all_of(players.begin(), players.end(), [curBet](Player p){ return (p.inGame() && !p.isFold() && p.getBet() == curBet); }))
+                    !std::all_of(players.begin(), players.end(), &Game::whileCond))
                 {
                     std::cout << players[curPlayer].getName() << std::endl
                               << "player's bet: " << players[curPlayer].getBet() << std::endl
@@ -127,6 +132,6 @@ public:
             }
         }
 
-        std::cout << "Game over. Winner - " << (std::find_if(players.begin(), players.end(), [](Player p){ return (p.isInGame()); }))->getName(); << "!" << std::endl;
+        std::cout << "Game over. Winner - " << (std::find_if(players.begin(), players.end(), [](Player p){ return (p.isInGame()); }))->getName() << "!" << std::endl;
     }
 };

@@ -17,6 +17,13 @@ public:
         , inGame(true)
         , fold(false) {   }
 
+    Player()
+        : cash(30000)
+        , bet(0)
+        , name("Clara")
+        , inGame(true)
+        , fold(false) {   }
+
     size_t getCash() { return (cash); }
     size_t getBet() { return (bet); }
     std::string getName() { return (name); }
@@ -40,7 +47,7 @@ public:
         }
     }
 
-    void fold() { fold = true; }
+    void setFold() { fold = true; }
 
     void reset() { bet = 0; fold = false; }
     void win(size_t gain) { cash += gain; inGame = true;}
